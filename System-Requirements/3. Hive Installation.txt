@@ -1,0 +1,27 @@
+1.) Download hive archive using the wget http://redrockdigimark.com/apachemirror/hive/hive-1.2.1/apache-hive-1.2.1-bin.tar.gz.
+
+2.) Unpack the archive using tar -xvf apache-hive-1.2.1-bin.tar.gz in your current location.
+
+3.) Move it to /usr/local using sudo mv apache-hive-1.2.1 /usr/local/hive command.
+
+4.) Now open the bash profile using sudo nano $HOME/.bashrc command and add the following parameters into it :-
+	export HIVE_HOME=/usr/local/hive
+	export PATH=$PATH:$HIVE_HOME/bin
+	export HADOOP_USER_CLASSPATH_FIRST=true
+
+5.) Now do a source $HOME/.bashrc for the changes to take into effect
+
+6.) Make a temp directory in HDFS by executing hadoop fs -mkdir /tmp command.
+
+7.) Make hive warehouse directory by executing hadoop fs -mkdir /user/hive/datawarehouse.  You might have to create each one of these directories individually in the hierarchy. 
+
+8.) Give proper rights to these newly created directories by executing - 
+	
+	hadoop fs -chmod g+w /temp 
+	hadoop fs -chmod g+w /user/hive/datawarehouse.
+
+9.) To overcome a bug between hive and hadoop, you need to copy jline-2.12.jar by executing - 
+	
+	cp /usr/local/hive/jline-2.12.jar /usr/local/hadoop/share/hadoop/yarn/lib.
+
+10.) You can start your hive shell now to browse through the hive database and tables

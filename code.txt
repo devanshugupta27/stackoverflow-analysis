@@ -1,0 +1,87 @@
+The code given below was used on the terminal arm of hive which can be invoked by typing hive onto the Linux Console.
+
+1. Checking the data set. 
+[devanshu@ubuntu]$ head answers.csv
+
+2. Removing the header line from data
+[devanshu@ubuntu]$ sed -i 1d answers.csv
+
+3. Moving data to the HDFS:
+
+[devanshu@ubuntu]$ hdfs dfs -copyFromLocal answers.csv /user/devanshu/ansdata
+[devanshu@ubuntu]$ hdfs dfs -ls /user/devanshu/ansdata
+
+4. Invoking hive
+
+[devanshu@ubuntu]$ hive
+
+5. Creating an external table 
+
+hive > CREATE EXTERNAL TABLE IF NOT EXISTS answers (
+	 > qid INT,
+	 > i INT,
+	 > qs INT,
+	 > qt INT,
+	 > tags STRING,
+	 > qvc INT,
+	 > qac INT,
+	 > aid INT,
+	 > j INT,
+	 > as INT,
+	 > at INT)
+	 > ROW FORMAT DELIMITED
+	 > FIELDS TERMINATED BY ','
+	 > STORED AS TEXTFILE
+	 > location '/user/devanshu/ansdata' ;
+		
+OK
+
+7. Create the ORC table
+
+hive > CREATE TABLE IF NOT EXISTS ans (
+	 > qid INT,
+	 > i INT,
+	 > qs INT,
+	 > qt INT,
+	 > tags STRING,
+	 > qvc INT,
+	 > qac INT,
+	 > aid INT,
+	 > j INT,
+	 > as INT,
+	 > at INT)
+	 > ROW FORMAT DELIMITED
+	 > FIELDS TERMINATED BY ','
+	 > STORED AS ORC;
+	 
+8. Insert the data 	from the external table to the Hive ORC table
+
+hive > INSERT OVERWRITE TABLE ans SELECT * FROM answers;
+
+NOTE : Using Hive to convert an external table into an ORC file format is very efficient because the conversion is a parallel and distributed action,
+	   and no standalone ORC conversion tool is necessary.
+	   
+9. Verify that you have correctly imported the dataset.
+
+hive > SELECT * from ans limit 3;
+OK
+The top three rows will be displayed.
+
+
+Now, you can start the analysis.
+
+1. What are the top 10 most common tags?
+
+hive > SELECT ans.tags, COUNT(ans.tags) as Count_T from ans GROUP BY ans.tags ORDER BY Count_T desc limit 10;
+
+2. What is the average time to answer a question?
+
+hive > SELECT avg(ans.at - ans.qt) from ans;
+
+3. What are the number of questions that got answered within 1 hour?
+
+hive > SELECT count(ans.slno) from ans where (ans.at - ans.qt) < 3600;
+
+4. What are the tags of questions which got answered within 1 hour?
+
+hive > SELECT DISTINCT ans.tags from ans where (ans.at - ans.qt) < 3600;

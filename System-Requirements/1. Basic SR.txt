@@ -1,0 +1,3 @@
+Operating System -  any UNIX Based (I used CentOS6)
+RAM - 				High RAM are usually better for the functionality of Hadoop. Minumum of 4 is expected.
+Hard Disk - 		min. 1 GB space

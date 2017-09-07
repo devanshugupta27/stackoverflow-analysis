@@ -1,0 +1,100 @@
+1.) Install sshd:
+sudo apt-get remove openssh-client
+sudo apt-get update 
+sudo apt-get install openssh-server
+
+2.) Type the sudo apt-get install openjdk-7-jdk command to install java.
+
+3.) Download hadoop using wget http://mirrors.sonic.net/apache/hadoop/common/hadoop-2.7.3/hadoop-2.7.3.tar.gz command.
+
+4.) tar -xvzf hadoop-2.7.3.tar.gz
+
+5.) Add the following 3 lines to bashrc file and save and quit
+    export HADOOP_HOME=/usr/local/hadoop
+    export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64
+    export PATH=$PATH:$HADOOP_HOME/bin
+
+6.) Open /usr/local/hadoop/etc/hadoop/core-site.xml add the following properties to it :-
+    <configuration>
+		<property>
+			<name>hadoop.tmp.dir</name>
+			<value>/usr/local/hadoop/tmp</value>
+			<description>A base for other temporary directories.</description>
+		</property>
+		<property>
+			<name>fs.defaultFS</name>
+			<value>hdfs://localhost:54310</value>
+			<description>The name of the default file system.  A URI whose
+			scheme and authority determine the FileSystem implementation.  The
+			uri's scheme determines the config property (fs.SCHEME.impl) naming
+			the FileSystem implementation class.  The uri's authority is used to
+			determine the host, port, etc. for a filesystem.</description>
+		</property>
+	 </configuration>
+
+7.) Open  /usr/local/hadoop/etc/hadoop/yarn-site.xml add the following properties to it :-
+	<configuration>
+		<property>
+			<name>yarn.nodemanager.aux-services</name>
+			<value>mapreduce_shuffle</value>
+		</property>
+		<property>
+			<name>yarn.nodemanager.aux-services.mapreduce_shuffle.class</name>
+			<value>org.apache.hadoop.mapred.ShuffleHandler</value>
+		</property>
+		<property>
+			<name>yarn.resourcemanager.address</name>
+			<value>localhost:9003</value>
+		</property>
+		<property>
+			<name>yarn.resourcemanager.resource-tracker.address</name>
+			<value>localhost:9001</value>
+		</property>
+		<property>
+			<name>yarn.resourcemanager.scheduler.address</name>
+			<value>localhost:9002</value>
+		</property>
+		<property>
+			<name>yarn.log-aggregation-enable</name>
+			<value>true</value>
+		</property>
+	</configuration>
+
+8.) Open  /usr/local/hadoop/etc/hadoop/hdfs-site.xml add the following properties to it :-
+	<configuration>
+        <property>
+			<name>dfs.replication</name>
+			<value>1</value>
+			<description>default replication factor for the cluster. </description>
+        </property>
+        <property>
+			<name>dfs.namenode.name.dir</name>
+			<value>file:/usr/local/hadoop/hadoop_data/hdfs/namenode</value>
+			<description>default replication factor for the cluster. </description>
+        </property>
+        <property>
+			<name>dfs.datanode.data.dir</name>
+			<value>file:/usr/local/hadoop/hadoop_data/hdfs/datanode</value>
+			<description>default replication factor for the cluster. </description>
+        </property>
+    </configuration>
+
+9.) Open  /usr/local/hadoop/etc/hadoop/mapred-site.xml add the following properties to it :-
+	<configuration>
+		<property>
+			<name>mapreduce.framework.name</name>
+			<value>yarn</value>
+		</property>
+		<property> 
+			<name>mapreduce.jobhistory.address</name>
+			<value>localhost:10020</value> 
+		</property>
+		<property> 
+			<name>mapreduce.jobhistory.webapp.address</name>
+			<value>localhost:19888</value> 
+		</property>
+	</configuration>
+
+10.) hadoop/sbin/start-dfs.sh
+
+11.) Hadoop is installed.
